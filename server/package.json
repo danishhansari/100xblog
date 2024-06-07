@@ -5,7 +5,7 @@
   "scripts": {
     "start": "bun dist/index.ts",
     "dev": "bun --watch src/index.ts",
-    "build": "tsc --b"
+    "build": "tsc && cp package.json dist"
   },
   "devDependencies": {
     "@types/bun": "^1.1.3",
