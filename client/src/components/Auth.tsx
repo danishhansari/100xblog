@@ -9,6 +9,11 @@ const Auth = ({ type }: { type: "signin" | "signup" }) => {
     username: "",
     password: "",
   });
+
+function sendRequest(){
+  axios.post()
+}
+
   return (
     <>
       <div className="h-screen flex justify-center w-full items-center">
