@@ -8,6 +8,11 @@ const app = new Hono<{
     JWT_SECRET: string;
   };
 }>();
+
+app.get("/", (c) => {
+  return c.json({ hi: "Hello from user route" });
+});
+
 app.post("/signup", async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -25,6 +30,7 @@ app.post("/signup", async (c) => {
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
     return c.json({ token });
   } catch (error) {
+    console.log(error);
     c.status(403);
     return c.json({ error });
   }

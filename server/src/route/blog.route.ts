@@ -10,13 +10,14 @@ const app = new Hono<{
   };
 }>();
 
-app.use("/api/v1/blog/*", async (c, next) => {
+app.use("/*", async (c, next) => {
   const header = c.req.header("authorization") || "";
 
-  const response = await verify(header, c.env.JWT_SECRET);
-  if (response.id) {
-    next();
-  } else {
+  const user = await verify(header, c.env.JWT_SECRET);
+  try {
+    c.set("jwtPayload", user.id);
+    await next();
+  } catch (error) {
     c.status(403);
     return c.json({ error: "unauthorized" });
   }
@@ -24,6 +25,7 @@ app.use("/api/v1/blog/*", async (c, next) => {
 
 app.post("/", async (c) => {
   const body = await c.req.json();
+  const authorId = c.get("jwtPayload");
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
@@ -32,15 +34,63 @@ app.post("/", async (c) => {
     data: {
       title: body.title,
       content: body.content,
-      authorId: body.authorId,
+      authorId,
     },
   });
+  return c.json({ id: blog.id });
 });
 
-app.put("/", (c) => {});
+app.put("/", async (c) => {
+  const body = await c.req.json();
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
 
-app.get("/:id", (c) => {
-  return c.text("Hello from Hono");
+  const blog = await prisma.blog.update({
+    where: {
+      id: body.id,
+    },
+    data: {
+      title: body.title,
+      content: body.content,
+    },
+  });
+  return c.json({ id: blog.id });
+});
+
+app.get("/get/:id", async (c) => {
+  const id = c.req.param("id");
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
+  try {
+    const blog = await prisma.blog.findFirst({
+      where: {
+        id: Number(id),
+      },
+    });
+    return c.json({ blog });
+  } catch (error) {
+    console.log(error);
+    c.status(411);
+    return c.json({ error: "Error while fetch blog" });
+  }
+});
+
+// pagination will add
+app.get("/blogs", async (c) => {
+  const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+  try {
+    const blogs = await prisma.blog.findMany({});
+    return c.json({ blogs });
+  } catch (err) {
+    console.log(err);
+    c.status(404);
+    return c.json({ message: "Error while fetching blogs" });
+  }
 });
 
 export default app;
