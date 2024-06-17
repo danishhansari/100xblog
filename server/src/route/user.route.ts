@@ -2,6 +2,8 @@ import { Hono } from "hono";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { sign } from "hono/jwt";
+import { signinSchema, signupSchema } from "@danishhansari/blog-common";
+
 const app = new Hono<{
   Bindings: {
     DATABASE_URL: string;
@@ -14,11 +16,15 @@ app.get("/", (c) => {
 });
 
 app.post("/signup", async (c) => {
+  const body = await c.req.json();
+  const { success } = signupSchema.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json({ message: "Input not correct" });
+  }
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-  const body = await c.req.json();
-
   //  zod
   try {
     const user = await prisma.user.create({
@@ -37,12 +43,15 @@ app.post("/signup", async (c) => {
 });
 
 app.post("/signin", async (c) => {
+  const body = await c.req.json();
+  const { success } = signinSchema.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json("Invalid Input");
+  }
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
-
-  const body = await c.req.json();
-
   try {
     const user = await prisma.user.findUnique({
       where: { email: body.email, password: body.password },

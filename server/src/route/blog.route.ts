@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { verify } from "hono/jwt";
 import { PrismaClient } from "@prisma/client/edge";
 import { withAccelerate } from "@prisma/extension-accelerate";
+import { updateBlogInput, createBlogInput } from "@danishhansari/blog-common";
 
 const app = new Hono<{
   Bindings: {
@@ -13,8 +14,8 @@ const app = new Hono<{
 app.use("/*", async (c, next) => {
   const header = c.req.header("authorization") || "";
 
-  const user = await verify(header, c.env.JWT_SECRET);
   try {
+    const user = await verify(header, c.env.JWT_SECRET);
     c.set("jwtPayload", user.id);
     await next();
   } catch (error) {
@@ -25,6 +26,12 @@ app.use("/*", async (c, next) => {
 
 app.post("/", async (c) => {
   const body = await c.req.json();
+
+  const { success } = createBlogInput.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json("Invalid input");
+  }
   const authorId = c.get("jwtPayload");
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
@@ -42,6 +49,11 @@ app.post("/", async (c) => {
 
 app.put("/", async (c) => {
   const body = await c.req.json();
+  const { success } = updateBlogInput.safeParse(body);
+  if (!success) {
+    c.status(411);
+    return c.json("Invalid input");
+  }
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
