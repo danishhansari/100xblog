@@ -30,7 +30,7 @@ app.post("/signup", async (c) => {
   try {
     const user = await prisma.user.create({
       data: {
-        email: body.email,
+        username: body.username,
         password: body.password,
       },
     });
@@ -55,7 +55,7 @@ app.post("/signin", async (c) => {
   }).$extends(withAccelerate());
   try {
     const user = await prisma.user.findUnique({
-      where: { email: body.email, password: body.password },
+      where: { username: body.username, password: body.password },
     });
 
     if (!user) {
