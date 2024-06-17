@@ -17,6 +17,7 @@ app.get("/", (c) => {
 
 app.post("/signup", async (c) => {
   const body = await c.req.json();
+  console.log(body);
   const { success } = signupSchema.safeParse(body);
   if (!success) {
     c.status(411);
