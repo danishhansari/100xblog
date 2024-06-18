@@ -96,8 +96,19 @@ app.get("/blogs", async (c) => {
     datasourceUrl: c.env.DATABASE_URL,
   }).$extends(withAccelerate());
   try {
-    const blogs = await prisma.blog.findMany({});
-    return c.json({ blogs });
+    const blogs = await prisma.blog.findMany({
+      select: {
+        content: true,
+        title: true,
+        id: true,
+        author: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+    return c.json(blogs);
   } catch (err) {
     console.log(err);
     c.status(404);

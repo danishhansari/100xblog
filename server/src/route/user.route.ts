@@ -35,7 +35,7 @@ app.post("/signup", async (c) => {
       },
     });
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-    return c.json({ token });
+    return c.json(token);
   } catch (error) {
     console.log(error);
     c.status(403);
@@ -63,7 +63,7 @@ app.post("/signin", async (c) => {
       return c.json({ error: "user not found" });
     }
     const token = await sign({ id: user.id }, c.env.JWT_SECRET);
-    return c.json({ token });
+    return c.json(token);
   } catch (error) {
     c.status(403);
     return c.json({ error });
