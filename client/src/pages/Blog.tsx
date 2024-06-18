@@ -12,7 +12,7 @@ const Blog = () => {
     return <div className="max-w-3xl mx-auto px-4">Loading...</div>;
   }
 
-  return FullBlog({ blog });
+  return <FullBlog blog={blog} />;
 };
 
 export default Blog;

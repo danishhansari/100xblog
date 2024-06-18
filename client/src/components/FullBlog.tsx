@@ -2,7 +2,7 @@ import Avatar from "./Avatar";
 
 const FullBlog = ({ blog }) => {
   return (
-    <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
+    <div className="mt-4 max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
       <div className="w-full flex-1">
         <h1 className="text-4xl font-bold">{blog.title}</h1>
         <p className="my-2 text-slate-600">Post on 2nd December 2023</p>
