@@ -29,8 +29,8 @@ const Auth = ({ type }: { type: "signin" | "signup" }) => {
 
   return (
     <>
-      <div className="h-screen flex justify-center w-full items-center">
-        <div className="rounded-sm p-8">
+      <div className="h-[80vh] md:h-screen flex justify-center w-full items-center">
+        <div className="rounded-sm p-2">
           <h1 className="text-3xl font-bold text-center">
             {type === "signin" ? "Login to Account" : "Create an Account"}
           </h1>
