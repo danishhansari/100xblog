@@ -1,8 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import BlogCard from "../components/BlogCard";
 import Skelleton from "../components/Skelleton";
 import { useBlogs } from "../hooks/useBlogs";
+import { useEffect } from "react";
 
 const Blogs = () => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return navigate("/signup");
+    }
+  }, []);
   const { loading, blogs } = useBlogs();
   console.log(blogs);
   return (

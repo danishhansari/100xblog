@@ -10,16 +10,8 @@ import Blogs from "./pages/Blogs";
 import AppTopBar from "./components/AppTopBar";
 import Blog from "./pages/Blog";
 import Publish from "./pages/Publish";
-import { useEffect } from "react";
 
 function App() {
-  const navigate = useNavigate();
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      return navigate("/signup");
-    }
-  }, []);
   return (
     <>
       <Router>
