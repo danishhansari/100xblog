@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { BACKEND_URL } from "../config";
 
 interface Blog {
@@ -11,25 +11,24 @@ interface Blog {
   };
 }
 
-export const useBlogs = () => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+export const useBlog = ({ id }: { readonly id: string }) => {
   const [loading, setLoading] = useState(true);
-  const token = localStorage.getItem("token");
-  console.log(token);
+  const [blog, setBlog] = useState<Blog>();
+
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/api/v1/blog/blogs`, {
+      .get(`${BACKEND_URL}/api/v1/blog/get/${id}`, {
         headers: {
-          Authorization: token,
+          Authorization: localStorage.getItem("token"),
         },
       })
       .then((response) => {
         setLoading(false);
-        setBlogs(response.data);
+        setBlog(response.data);
       })
       .catch((err: Error) => {
         console.log(err);
       });
-  }, []);
-  return { loading, blogs };
+  }, [id]);
+  return { blog, loading };
 };

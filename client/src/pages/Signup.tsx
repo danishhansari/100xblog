@@ -4,7 +4,7 @@ import Quote from "../components/Quote";
 const Signup = () => {
   return (
     <>
-      <div className="flex w-full">
+      <div className="flex w-full h-[90vh]">
         <Auth type="signup" />
         <Quote />
       </div>

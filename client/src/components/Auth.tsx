@@ -21,7 +21,7 @@ const Auth = ({ type }: { type: "signin" | "signup" }) => {
       );
       const jwt = response.data;
       localStorage.setItem("token", jwt);
-      navigate("/blogs");
+      navigate("/");
     } catch (err) {
       console.log(err);
     }
@@ -79,7 +79,7 @@ const Auth = ({ type }: { type: "signin" | "signup" }) => {
           <button
             onClick={sendRequest}
             type="button"
-            className="w-full mt-4 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+            className="w-full mt-4 text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
           >
             {type === "signup" ? "Sign up" : "Sign in"}
           </button>

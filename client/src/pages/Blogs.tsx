@@ -1,4 +1,5 @@
 import BlogCard from "../components/BlogCard";
+import Skelleton from "../components/Skelleton";
 import { useBlogs } from "../hooks/useBlogs";
 
 const Blogs = () => {
@@ -6,7 +7,15 @@ const Blogs = () => {
   console.log(blogs);
   return (
     <div className="flex justify-center max-w-3xl mx-auto p-4 flex-col gap-4">
-      {loading && <div>loading...</div>}
+      {loading && (
+        <>
+          <Skelleton />
+          <Skelleton />
+          <Skelleton />
+          <Skelleton />
+          <Skelleton />
+        </>
+      )}
       {blogs.map((blog) => (
         <BlogCard
           id={blog.id}
